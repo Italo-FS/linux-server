@@ -1,0 +1,1568 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Linux & Server — Cheatsheet</title>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      --background: #f4f6fb;
+      --surface: #ffffff;
+      --surface-muted: #f8fafc;
+
+      --primary: #2563eb;
+      --primary-light: #eff6ff;
+
+      --text: #172033;
+      --text-muted: #64748b;
+
+      --border: #e2e8f0;
+      --code-background: #f1f5f9;
+
+      --radius: 12px;
+      --shadow: 0 4px 24px rgba(15, 23, 42, 0.04);
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      background: var(--background);
+      color: var(--text);
+
+      font-family:
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    a:focus-visible {
+      outline: 3px solid #93c5fd;
+      outline-offset: 3px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 32px 24px 64px;
+    }
+
+    /* HEADER */
+
+    .header {
+      position: relative;
+      overflow: hidden;
+
+      padding: 34px 40px;
+      margin-bottom: 24px;
+
+      border-radius: 18px;
+
+      background: linear-gradient(
+        120deg,
+        #0f172a 0%,
+        #1e293b 65%,
+        #1e3a5f 100%
+      );
+
+      color: white;
+    }
+
+    .header::after {
+      content: ">_";
+
+      position: absolute;
+      top: -65px;
+      right: 30px;
+
+      font-family: monospace;
+      font-size: 230px;
+      font-weight: 700;
+
+      color: rgba(255, 255, 255, 0.035);
+
+      pointer-events: none;
+    }
+
+    .header-content {
+      position: relative;
+      z-index: 1;
+    }
+
+    .header-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      margin-bottom: 14px;
+
+      color: #93c5fd;
+
+      font-family: monospace;
+      font-size: 11px;
+      font-weight: 700;
+
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .header-label::before {
+      content: "";
+
+      width: 7px;
+      height: 7px;
+
+      border-radius: 50%;
+      background: #4ade80;
+    }
+
+    .header h1 {
+      margin: 0;
+
+      font-size: clamp(25px, 4vw, 34px);
+      font-weight: 750;
+      letter-spacing: -1px;
+      line-height: 1.2;
+    }
+
+    .header h1 span {
+      color: #60a5fa;
+    }
+
+    .header p {
+      max-width: 580px;
+
+      margin: 12px 0 0;
+
+      color: #cbd5e1;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    .header-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+
+      margin-top: 22px;
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 6px 11px;
+
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 6px;
+
+      background: rgba(255, 255, 255, 0.06);
+
+      color: #e2e8f0;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* TOOLBAR */
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+
+      margin-bottom: 24px;
+    }
+
+    .search {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-icon {
+      position: absolute;
+      top: 50%;
+      left: 15px;
+
+      transform: translateY(-50%);
+
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .search input {
+      width: 100%;
+      height: 44px;
+
+      padding: 0 16px 0 42px;
+
+      border: 1px solid var(--border);
+      border-radius: 9px;
+
+      outline: none;
+      background: var(--surface);
+
+      color: var(--text);
+      font-size: 13px;
+
+      transition:
+        border-color 0.2s,
+        box-shadow 0.2s;
+    }
+
+    .search input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .search input::placeholder {
+      color: #94a3b8;
+    }
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+
+      height: 44px;
+      padding: 0 18px;
+
+      border: 1px solid var(--border);
+      border-radius: 9px;
+
+      background: var(--surface);
+
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 650;
+
+      white-space: nowrap;
+
+      transition:
+        background 0.2s,
+        border-color 0.2s;
+    }
+
+    .btn:hover {
+      background: var(--surface-muted);
+      border-color: #cbd5e1;
+    }
+
+    .btn-primary {
+      border-color: var(--primary);
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      border-color: #1d4ed8;
+      background: #1d4ed8;
+    }
+
+    /* CATEGORIES */
+
+    .categories {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      margin-bottom: 28px;
+    }
+
+    .category-filter {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+
+      padding: 8px 12px;
+
+      border: 1px solid var(--border);
+      border-radius: 7px;
+
+      background: var(--surface);
+
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 600;
+
+      transition: all 0.2s;
+    }
+
+    .category-filter:hover {
+      border-color: #bfdbfe;
+      color: var(--primary);
+    }
+
+    .category-filter.active {
+      border-color: #bfdbfe;
+      background: var(--primary-light);
+      color: var(--primary);
+    }
+
+    .filter-count {
+      padding: 1px 6px;
+
+      border-radius: 4px;
+
+      background: rgba(148, 163, 184, 0.12);
+
+      font-family: monospace;
+      font-size: 10px;
+    }
+
+    .category-filter.active .filter-count {
+      background: #dbeafe;
+    }
+
+    /* CONTENT */
+
+    .content {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-items: start;
+      gap: 20px;
+    }
+
+    .section {
+      min-width: 0;
+      overflow: hidden;
+
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+
+      background: var(--surface);
+
+      box-shadow: var(--shadow);
+      break-inside: avoid;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+
+      padding: 17px 20px;
+
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      margin: 0;
+
+      font-size: 14px;
+      font-weight: 750;
+      letter-spacing: -0.2px;
+    }
+
+    .section-icon {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 30px;
+      height: 30px;
+
+      flex-shrink: 0;
+
+      border-radius: 8px;
+
+      background: var(--category-light, #eff6ff);
+      color: var(--category-color, #2563eb);
+
+      font-size: 15px;
+      font-family: monospace;
+      font-weight: 700;
+    }
+
+    .section-count {
+      color: #94a3b8;
+      font-family: monospace;
+      font-size: 11px;
+
+      white-space: nowrap;
+    }
+
+    .command-list {
+      padding: 4px 0;
+    }
+
+    .command-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr) 24px;
+      align-items: center;
+      gap: 12px;
+
+      min-height: 50px;
+      padding: 10px 18px;
+
+      border-bottom: 1px solid #f1f5f9;
+    }
+
+    .command-row:last-child {
+      border-bottom: none;
+    }
+
+    .command-row:hover {
+      background: #fafcff;
+    }
+
+    .command-code {
+      min-width: 0;
+      margin: 0;
+
+      color: #1d4ed8;
+
+      font-family:
+        "SFMono-Regular",
+        Consolas,
+        "Liberation Mono",
+        monospace;
+
+      font-size: 11px;
+      font-weight: 650;
+      line-height: 1.6;
+
+      overflow-wrap: anywhere;
+    }
+
+    .command-code .placeholder {
+      color: #64748b;
+      font-weight: 500;
+    }
+
+    .command-description {
+      margin: 0;
+
+      color: #64748b;
+      font-size: 11.5px;
+      line-height: 1.5;
+    }
+
+    .copy-btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+
+      width: 24px;
+      height: 28px;
+      padding: 0;
+
+      border: none;
+      border-radius: 5px;
+
+      background: transparent;
+      color: #94a3b8;
+
+      opacity: 0.55;
+
+      transition:
+        opacity 0.2s,
+        color 0.2s,
+        background 0.2s;
+    }
+
+    .command-row:hover .copy-btn,
+    .copy-btn:focus-visible {
+      opacity: 1;
+    }
+
+    .copy-btn:hover {
+      background: #eff6ff;
+      color: var(--primary);
+    }
+
+    .copy-btn.copied {
+      opacity: 1;
+      color: #16a34a;
+    }
+
+    /* EMPTY STATE */
+
+    .empty-state {
+      display: none;
+
+      grid-column: 1 / -1;
+
+      padding: 60px 20px;
+
+      border: 1px dashed var(--border);
+      border-radius: var(--radius);
+
+      background: var(--surface);
+
+      text-align: center;
+    }
+
+    .empty-state.visible {
+      display: block;
+    }
+
+    .empty-state h2 {
+      margin: 0 0 6px;
+      font-size: 16px;
+    }
+
+    .empty-state p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    /* FOOTER */
+
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+
+      margin-top: 32px;
+      padding-top: 18px;
+
+      border-top: 1px solid var(--border);
+
+      color: #94a3b8;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 900px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 16px 12px 32px;
+      }
+
+      .header {
+        padding: 28px 22px;
+        border-radius: 12px;
+      }
+
+      .header::after {
+        right: -25px;
+        font-size: 180px;
+      }
+
+      .header h1 {
+        font-size: 26px;
+      }
+
+      .toolbar {
+        gap: 8px;
+      }
+
+      .search {
+        flex-basis: 100%;
+      }
+
+      .toolbar .btn {
+        flex: 1;
+      }
+
+      .categories {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+
+        margin-right: -12px;
+        padding: 2px 12px 12px 0;
+
+        scrollbar-width: thin;
+      }
+
+      .category-filter {
+        flex-shrink: 0;
+      }
+
+      .section-header {
+        padding: 14px 15px;
+      }
+
+      .command-row {
+        grid-template-columns: minmax(0, 1fr) 26px;
+        gap: 5px 10px;
+
+        padding: 11px 15px;
+      }
+
+      .command-code {
+        grid-column: 1;
+        grid-row: 1;
+      }
+
+      .command-description {
+        grid-column: 1;
+        grid-row: 2;
+      }
+
+      .copy-btn {
+        grid-column: 2;
+        grid-row: 1 / 3;
+
+        opacity: 1;
+      }
+    }
+
+    /* PRINT */
+
+    @page {
+      size: A4 portrait;
+      margin: 10mm;
+    }
+
+    @media print {
+      :root {
+        --background: #fff;
+        --border: #e2e8f0;
+        --shadow: none;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-shadow: none !important;
+        text-shadow: none !important;
+        transition: none !important;
+      }
+
+      html,
+      body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+
+        background: white !important;
+        color: #172033;
+
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+
+      .container {
+        max-width: none;
+        margin: 0;
+        padding: 0;
+      }
+
+      .header {
+        margin-bottom: 12px;
+        padding: 16px 20px;
+
+        border-radius: 8px;
+      }
+
+      .header::after {
+        top: -40px;
+        font-size: 150px;
+      }
+
+      .header-label {
+        margin-bottom: 5px;
+        font-size: 8px;
+      }
+
+      .header h1 {
+        font-size: 21px;
+      }
+
+      .header p {
+        margin-top: 5px;
+        font-size: 9px;
+      }
+
+      .header-meta {
+        margin-top: 10px;
+        gap: 6px;
+      }
+
+      .meta-badge {
+        padding: 3px 7px;
+        font-size: 8px;
+      }
+
+      .toolbar,
+      .categories,
+      .copy-btn {
+        display: none !important;
+      }
+
+      .content {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+
+        align-items: start;
+      }
+
+      .section {
+        border-radius: 6px;
+
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .section-header {
+        padding: 8px 10px;
+
+        break-after: avoid;
+        page-break-after: avoid;
+      }
+
+      .section-title {
+        gap: 6px;
+        font-size: 10px;
+      }
+
+      .section-icon {
+        width: 22px;
+        height: 22px;
+
+        border-radius: 5px;
+        font-size: 11px;
+      }
+
+      .section-count {
+        font-size: 8px;
+      }
+
+      .command-list {
+        padding: 2px 0;
+      }
+
+      .command-row {
+        grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+        gap: 7px;
+
+        min-height: 0;
+        padding: 6px 9px;
+
+        break-inside: avoid;
+        page-break-inside: avoid;
+      }
+
+      .command-code {
+        font-size: 8px;
+        line-height: 1.4;
+      }
+
+      .command-description {
+        font-size: 8px;
+        line-height: 1.4;
+      }
+
+      .footer {
+        margin-top: 12px;
+        padding-top: 7px;
+
+        font-size: 8px;
+      }
+
+      .empty-state {
+        display: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <header class="header">
+      <div class="header-content">
+
+        <div class="header-label">
+          Developer reference
+        </div>
+
+        <h1>Linux <span>&</span> Server</h1>
+
+        <p>
+          Guia rápido de comandos essenciais para administração
+          de servidores, terminal Linux e ambientes Docker.
+        </p>
+
+        <div class="header-meta">
+          <span class="meta-badge" id="totalCommands">
+            0 comandos
+          </span>
+
+          <span class="meta-badge" id="totalCategories">
+            0 categorias
+          </span>
+
+          <span class="meta-badge">
+            $ terminal
+          </span>
+        </div>
+
+      </div>
+    </header>
+
+    <div class="toolbar">
+
+      <div class="search">
+
+        <svg
+          class="search-icon"
+          width="17"
+          height="17"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          aria-hidden="true"
+        >
+          <circle cx="11" cy="11" r="8" />
+          <path d="m21 21-4.35-4.35" />
+        </svg>
+
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Buscar comandos, descrições ou categorias..."
+          aria-label="Buscar comandos"
+          autocomplete="off"
+        />
+
+      </div>
+
+      <button
+        class="btn"
+        id="clearButton"
+        type="button"
+      >
+        Limpar
+      </button>
+
+      <button
+        class="btn btn-primary"
+        id="printButton"
+        type="button"
+      >
+        <svg
+          width="16"
+          height="16"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+        >
+          <path d="M6 9V2h12v7" />
+          <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+          <path d="M6 14h12v8H6z" />
+        </svg>
+
+        Imprimir / PDF
+      </button>
+
+    </div>
+
+    <nav
+      class="categories"
+      id="categoryFilters"
+      aria-label="Filtrar por categoria"
+    ></nav>
+
+    <div
+      class="content"
+      id="content"
+    ></div>
+
+    <footer class="footer">
+      <span>LINUX & SERVER / CHEATSHEET</span>
+      <span>Quick reference · Terminal commands</span>
+    </footer>
+
+  </main>
+
+  <script>
+    "use strict";
+
+    /*
+     * =========================================================
+     * COMMANDS
+     * =========================================================
+     *
+     * Adicione novos comandos nesta constante.
+     *
+     * Estrutura:
+     * {
+     *   category: "Categoria",
+     *   command: "comando",
+     *   description: "Descrição do comando"
+     * }
+     *
+     * As categorias são criadas automaticamente.
+     */
+
+    const COMMANDS = [
+      // SYSTEM
+      {
+        category: "Sistema",
+        command: "poweroff",
+        description: "Desliga a máquina",
+      },
+      {
+        category: "Sistema",
+        command: "reboot",
+        description: "Reinicia a máquina",
+      },
+      {
+        category: "Sistema",
+        command: "top",
+        description: "Mostra processos em execução",
+      },
+      {
+        category: "Sistema",
+        command: "htop",
+        description: "Versão interativa do top",
+      },
+      {
+        category: "Sistema",
+        command: "df -h",
+        description: "Mostra o uso de disco",
+      },
+      {
+        category: "Sistema",
+        command: "free -h",
+        description: "Mostra o uso de memória",
+      },
+
+      // NAVIGATION
+      {
+        category: "Navegação",
+        command: "pwd",
+        description: "Mostra o diretório atual",
+      },
+      {
+        category: "Navegação",
+        command: "ls",
+        description: "Lista arquivos e diretórios",
+      },
+      {
+        category: "Navegação",
+        command: "cd <dir>",
+        description: "Entra em um diretório",
+      },
+
+      // FILES
+      {
+        category: "Arquivos",
+        command: "touch <file>",
+        description: "Cria um arquivo vazio",
+      },
+      {
+        category: "Arquivos",
+        command: "cp <src> <dest>",
+        description: "Copia arquivos",
+      },
+      {
+        category: "Arquivos",
+        command: "mv <src> <dest>",
+        description: "Move ou renomeia arquivos",
+      },
+      {
+        category: "Arquivos",
+        command: "rm <file>",
+        description: "Remove um arquivo",
+      },
+      {
+        category: "Arquivos",
+        command: "rm -rf <dir>",
+        description: "Remove um diretório recursivamente",
+      },
+      {
+        category: "Arquivos",
+        command: "tail -f <file>",
+        description: "Acompanha as últimas linhas de um arquivo",
+      },
+
+      // PERMISSIONS
+      {
+        category: "Permissões",
+        command: "chmod +x <file>",
+        description: "Torna um arquivo executável",
+      },
+      {
+        category: "Permissões",
+        command: "chown user:group <file>",
+        description: "Altera o proprietário e o grupo do arquivo",
+      },
+
+      // NETWORK
+      {
+        category: "Rede",
+        command: "ping <host>",
+        description: "Testa a conectividade com um host",
+      },
+      {
+        category: "Rede",
+        command: "ip a",
+        description: "Mostra os endereços IP da máquina",
+      },
+
+      // PACKAGES
+      {
+        category: "Pacotes",
+        command: "apt update",
+        description: "Atualiza a lista de pacotes",
+      },
+      {
+        category: "Pacotes",
+        command: "apt upgrade",
+        description: "Atualiza os pacotes instalados",
+      },
+      {
+        category: "Pacotes",
+        command: "apt install <pkg>",
+        description: "Instala um pacote",
+      },
+
+      // DOCKER
+      {
+        category: "Docker",
+        command: "docker ps",
+        description: "Lista os containers em execução",
+      },
+      {
+        category: "Docker",
+        command: "docker logs <container>",
+        description: "Mostra os logs de um container",
+      },
+      {
+        category: "Docker",
+        command: "docker exec -it <container> bash",
+        description: "Acessa o terminal de um container",
+      },
+    ];
+
+    /*
+     * =========================================================
+     * CATEGORY CONFIGURATION
+     * =========================================================
+     *
+     * Opcional.
+     *
+     * Categorias não configuradas aqui recebem automaticamente
+     * uma cor e um ícone padrão.
+     */
+
+    const CATEGORY_CONFIG = {
+      Sistema: {
+        icon: "⚙",
+        color: "#2563eb",
+        light: "#eff6ff",
+      },
+
+      Navegação: {
+        icon: "↗",
+        color: "#0891b2",
+        light: "#ecfeff",
+      },
+
+      Arquivos: {
+        icon: "▤",
+        color: "#7c3aed",
+        light: "#f5f3ff",
+      },
+
+      Permissões: {
+        icon: "♙",
+        color: "#d97706",
+        light: "#fffbeb",
+      },
+
+      Rede: {
+        icon: "◎",
+        color: "#059669",
+        light: "#ecfdf5",
+      },
+
+      Pacotes: {
+        icon: "⬡",
+        color: "#db2777",
+        light: "#fdf2f8",
+      },
+
+      Docker: {
+        icon: "◈",
+        color: "#0284c7",
+        light: "#f0f9ff",
+      },
+    };
+
+    /*
+     * =========================================================
+     * APPLICATION
+     * =========================================================
+     */
+
+    const elements = {
+      content: document.getElementById("content"),
+      filters: document.getElementById("categoryFilters"),
+      search: document.getElementById("searchInput"),
+      clearButton: document.getElementById("clearButton"),
+      printButton: document.getElementById("printButton"),
+      totalCommands: document.getElementById("totalCommands"),
+      totalCategories: document.getElementById("totalCategories"),
+    };
+
+    const state = {
+      search: "",
+      category: "Todas",
+    };
+
+    const DEFAULT_CATEGORY_CONFIG = {
+      icon: "$",
+      color: "#475569",
+      light: "#f1f5f9",
+    };
+
+    const COPY_ICON = `
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <rect x="8" y="8" width="13" height="13" rx="2" />
+        <path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3" />
+      </svg>
+    `;
+
+    const CHECK_ICON = `
+      <svg
+        width="15"
+        height="15"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        aria-hidden="true"
+      >
+        <path d="m5 12 4 4L19 6" />
+      </svg>
+    `;
+
+    function getCategories() {
+      return [...new Set(COMMANDS.map((item) => item.category))];
+    }
+
+    function getCommandsByCategory(category) {
+      return COMMANDS.filter((item) => item.category === category);
+    }
+
+    function normalizeText(value) {
+      return value
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+    }
+
+    function getFilteredCommands() {
+      const search = normalizeText(state.search.trim());
+
+      return COMMANDS.filter((item) => {
+        const matchesCategory =
+          state.category === "Todas" ||
+          item.category === state.category;
+
+        const searchableText = normalizeText(
+          `${item.category} ${item.command} ${item.description}`
+        );
+
+        const matchesSearch = searchableText.includes(search);
+
+        return matchesCategory && matchesSearch;
+      });
+    }
+
+    /*
+     * FORMATTING
+     */
+
+    function formatCommand(command) {
+      const fragment = document.createDocumentFragment();
+
+      // Destaca argumentos como <file>, <dir> e <container>.
+      // textContent garante que os comandos sejam exibidos como
+      // texto, sem serem interpretados como HTML.
+
+      const parts = command.split(/(<[^<>]+>)/g);
+
+      for (const part of parts) {
+        if (!part) continue;
+
+        if (/^<[^<>]+>$/.test(part)) {
+          const placeholder = document.createElement("span");
+
+          placeholder.className = "placeholder";
+          placeholder.textContent = part;
+
+          fragment.appendChild(placeholder);
+        } else {
+          fragment.appendChild(document.createTextNode(part));
+        }
+      }
+
+      return fragment;
+    }
+
+    /*
+     * COPY COMMAND
+     */
+
+    async function copyCommand(command, button) {
+      try {
+        await navigator.clipboard.writeText(command);
+
+        button.classList.add("copied");
+        button.innerHTML = CHECK_ICON;
+        button.setAttribute("aria-label", "Comando copiado");
+        button.title = "Copiado!";
+
+        setTimeout(() => {
+          button.classList.remove("copied");
+          button.innerHTML = COPY_ICON;
+          button.setAttribute("aria-label", "Copiar comando");
+          button.title = "Copiar comando";
+        }, 1500);
+      } catch {
+        // O clipboard pode estar indisponível em alguns
+        // navegadores quando o arquivo é aberto via file://.
+
+        const textArea = document.createElement("textarea");
+
+        textArea.value = command;
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+
+        document.body.appendChild(textArea);
+
+        textArea.focus();
+        textArea.select();
+
+        let copied = false;
+
+        try {
+          copied = document.execCommand("copy");
+        } finally {
+          textArea.remove();
+        }
+
+        if (copied) {
+          button.classList.add("copied");
+          button.innerHTML = CHECK_ICON;
+          button.title = "Copiado!";
+
+          setTimeout(() => {
+            button.classList.remove("copied");
+            button.innerHTML = COPY_ICON;
+            button.title = "Copiar comando";
+          }, 1500);
+        } else {
+          button.title = "Não foi possível copiar";
+        }
+      }
+    }
+
+    /*
+     * COMMAND ROW
+     */
+
+    function createCommandRow(item) {
+      const row = document.createElement("div");
+
+      row.className = "command-row";
+
+      const code = document.createElement("code");
+
+      code.className = "command-code";
+      code.appendChild(formatCommand(item.command));
+
+      const description = document.createElement("p");
+
+      description.className = "command-description";
+      description.textContent = item.description;
+
+      const copyButton = document.createElement("button");
+
+      copyButton.className = "copy-btn";
+      copyButton.type = "button";
+      copyButton.title = "Copiar comando";
+      copyButton.setAttribute("aria-label", "Copiar comando");
+      copyButton.innerHTML = COPY_ICON;
+
+      copyButton.addEventListener("click", () => {
+        copyCommand(item.command, copyButton);
+      });
+
+      row.append(code, description, copyButton);
+
+      return row;
+    }
+
+    /*
+     * CATEGORY SECTION
+     */
+
+    function createCategorySection(category, commands) {
+      const config =
+        CATEGORY_CONFIG[category] ?? DEFAULT_CATEGORY_CONFIG;
+
+      const section = document.createElement("section");
+
+      section.className = "section";
+
+      section.style.setProperty(
+        "--category-color",
+        config.color
+      );
+
+      section.style.setProperty(
+        "--category-light",
+        config.light
+      );
+
+      const header = document.createElement("div");
+
+      header.className = "section-header";
+
+      const title = document.createElement("h2");
+
+      title.className = "section-title";
+
+      const icon = document.createElement("span");
+
+      icon.className = "section-icon";
+      icon.textContent = config.icon;
+      icon.setAttribute("aria-hidden", "true");
+
+      const titleText = document.createElement("span");
+
+      titleText.textContent = category;
+
+      title.append(icon, titleText);
+
+      const count = document.createElement("span");
+
+      count.className = "section-count";
+      count.textContent = String(commands.length).padStart(2, "0");
+
+      header.append(title, count);
+
+      const list = document.createElement("div");
+
+      list.className = "command-list";
+
+      for (const command of commands) {
+        list.appendChild(createCommandRow(command));
+      }
+
+      section.append(header, list);
+
+      return section;
+    }
+
+    /*
+     * CATEGORY FILTERS
+     */
+
+    function renderCategoryFilters() {
+      elements.filters.replaceChildren();
+
+      const categories = ["Todas", ...getCategories()];
+
+      for (const category of categories) {
+        const count =
+          category === "Todas"
+            ? COMMANDS.length
+            : getCommandsByCategory(category).length;
+
+        const button = document.createElement("button");
+
+        button.type = "button";
+        button.className = "category-filter";
+
+        const isActive = category === state.category;
+
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+
+        const label = document.createElement("span");
+
+        label.textContent = category;
+
+        const counter = document.createElement("span");
+
+        counter.className = "filter-count";
+        counter.textContent = count;
+
+        button.append(label, counter);
+
+        button.addEventListener("click", () => {
+          state.category = category;
+
+          render();
+        });
+
+        elements.filters.appendChild(button);
+      }
+    }
+
+    /*
+     * MAIN RENDER
+     */
+
+    function renderContent() {
+      const filteredCommands = getFilteredCommands();
+
+      elements.content.replaceChildren();
+
+      if (filteredCommands.length === 0) {
+        const emptyState = document.createElement("div");
+
+        emptyState.className = "empty-state visible";
+
+        const title = document.createElement("h2");
+
+        title.textContent = "Nenhum comando encontrado";
+
+        const description = document.createElement("p");
+
+        description.textContent =
+          "Tente buscar por outro termo ou selecione outra categoria.";
+
+        emptyState.append(title, description);
+
+        elements.content.appendChild(emptyState);
+
+        return;
+      }
+
+      const categories = getCategories();
+
+      for (const category of categories) {
+        const commands = filteredCommands.filter(
+          (item) => item.category === category
+        );
+
+        if (commands.length === 0) continue;
+
+        elements.content.appendChild(
+          createCategorySection(category, commands)
+        );
+      }
+    }
+
+    function renderStatistics() {
+      const categoryCount = getCategories().length;
+
+      elements.totalCommands.textContent =
+        `${COMMANDS.length} comandos`;
+
+      elements.totalCategories.textContent =
+        `${categoryCount} categorias`;
+    }
+
+    function render() {
+      renderCategoryFilters();
+      renderContent();
+    }
+
+    /*
+     * EVENTS
+     */
+
+    elements.search.addEventListener("input", (event) => {
+      state.search = event.target.value;
+
+      renderContent();
+    });
+
+    elements.clearButton.addEventListener("click", () => {
+      state.search = "";
+      state.category = "Todas";
+
+      elements.search.value = "";
+
+      render();
+      elements.search.focus();
+    });
+
+    elements.printButton.addEventListener("click", () => {
+      // A impressão sempre apresenta todos os comandos.
+
+      state.search = "";
+      state.category = "Todas";
+
+      elements.search.value = "";
+
+      render();
+
+      window.print();
+    });
+
+    /*
+     * INITIALIZATION
+     */
+
+    renderStatistics();
+    render();
+  </script>
+</body>
+</html>
